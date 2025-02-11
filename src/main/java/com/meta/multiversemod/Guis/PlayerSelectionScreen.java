@@ -1,8 +1,10 @@
 package com.meta.multiversemod.Guis;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 import net.minecraft.client.gui.components.Button;
@@ -38,13 +40,15 @@ public class PlayerSelectionScreen extends Screen {
 
 
         private void selectPlayer(ServerPlayer target) {
-            this.user.teleportTo(target.level(), target.getX(), target.getY(),target.getZ(), target.getYRot(), target.getXRot());
-            this.minecraft.setScreen(null);
+            if (target.level() instanceof ServerLevel serverLevel) {
+                this.user.teleportTo(serverLevel, target.getX(), target.getY(),target.getZ(), target.getYRot(), target.getXRot());
+                this.minecraft.setScreen(null);
+            }
         }
 
         @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta){
-        this.renderBackground(poseStack);
-        super.render(poseStack, mouseX, mouseY, delta);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta){
+        this.renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, delta);
         }
 }

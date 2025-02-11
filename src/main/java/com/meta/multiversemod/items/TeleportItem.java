@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.List;
 
@@ -18,16 +19,23 @@ public class TeleportItem extends Item {
         return user.getServer().getPlayerList().getPlayers();
     }
 
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand){
-        if(!level.isClientSide) {
-            Player target = findTargetPlayer(player);
-            player.teleportTo(
-                    target.getX(),
-                    target.getY(),
-                    target.getZ()
-            );
-            ItemStack itemStack = player.getItemInHand(hand);
-            itemStack.shrink(1);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+            openPlayerSelectionScreen(serverPlayer);
+            return InteractionResultHolder.success(player.getItemInHand((hand)));
+            ServerPlayer target = findTargetPlayer(serverPlayer);
+            if (target != null) {
+                player.teleportTo(
+                        target.getX(),
+                        target.getY(),
+                        target.getZ()
+                );
+                ItemStack itemStack = player.getItemInHand(hand);
+                if (!serverPlayer.getAbilities().instabuild) {
+                    itemStack.shrink(1);
+                }
+                return InteractionResultHolder.success(itemStack);
+            }
         }
         return InteractionResultHolder.success(player.getItemInHand((hand)));
     }
