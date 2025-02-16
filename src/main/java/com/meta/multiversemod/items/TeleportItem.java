@@ -13,7 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
-import org.apache.logging.log4j.core.jmx.Server;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -24,9 +24,8 @@ public class TeleportItem extends Item {
     public TeleportItem(Properties p_41383_) {
         super(p_41383_);
     }
-    private List<ServerPlayer> getAllOnlinePlyers(ServerPlayer user) {
-        return user.getServer().getPlayerList().getPlayers();
-    }
+
+
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
@@ -39,8 +38,8 @@ public class TeleportItem extends Item {
         }
 
     private void openPlayerSelectionScreen(ServerPlayer player) {
-        List<ServerPlayer> players =
-                player.getServer().getPlayerList().getPlayers();
+        List<ServerPlayer> players = player.getServer().getPlayerList().getPlayers();
+
         NetworkHooks.openScreen(player, new MenuProvider() {
             @Override
             public Component getDisplayName() {
