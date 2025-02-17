@@ -49,7 +49,8 @@ public class TeleportItem extends Item {
             @Nullable
             @Override
             public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                return new PlayerSelectionScreen(windowId, players,(ServerPlayer) player);
+                List<ServerPlayer> serverPlayers = player.getServer().getPlayerList().getPlayers();
+                return new PlayerSelectionScreen(windowId, serverPlayers, (ServerPlayer) player);
             }
         });
     }
